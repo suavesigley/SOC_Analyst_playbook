@@ -1,0 +1,3 @@
+Report ID,Date,Threat Type,Tool Used,Status,Actions Taken,MITRE Techniques
+001,2025-08-25,Phishing (simulated),VirusTotal,Resolved,No block needed; used for training,T1566.001
+002,2023-04-06,BazarLoader malware,Hybrid Analysis,Open,Pending IOC extraction and dashboard mapping,T1059.003|T1547.001|T1071.001
