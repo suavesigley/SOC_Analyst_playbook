@@ -65,5 +65,5 @@ This project simulates a real-world SOC investigation of phishing emails. It fol
 ## 📬 Contact
 
 Feel free to connect or collaborate:  
-📧 [LinkedIn](https://www.linkedin.com/in/joshuasigley)  
+📧 [LinkedIn](www.linkedin.com/in/suavesigley)  
 📁 [Portfolio](https://github.com/suavesigley)
