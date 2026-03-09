@@ -82,8 +82,8 @@
 
 ## 🖼️ Screenshot Reference
 
-![Hybrid Analysis Overview](Images/1.png)
-![Alt](./images/1.png)
+![Hybrid Analysis Overview](reports/1.png)
+
 ---
 
 ## 📎 Notes
