@@ -82,7 +82,7 @@
 
 ## 🖼️ Screenshot Reference
 
-![Hybrid Analysis Overview](images/1.png)
+![Hybrid Analysis Overview](Images/1.png)
 
 ---
 
