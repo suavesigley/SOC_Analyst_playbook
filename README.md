@@ -1,69 +1,176 @@
-# 🧠 MITRE-Aligned Phishing Investigation Playbook
+# 🛡️ SOC Analyst Playbook
 
-**Author**: Joshua Sigley  
-**Role Target**: SOC Analyst / Cybersecurity Support  
-**Tools Used**: ANY.RUN, MetaDefender, Markdown, MITRE ATT&CK, Wireshark, TryHackMe
-
----
-
-## 🔍 Overview
-
-This project simulates a real-world SOC investigation of phishing emails. It follows a structured incident response workflow aligned with the MITRE ATT&CK framework, using sandbox analysis, threat intelligence tools, and Markdown-based ticketing logs.
+Author: **Joshua Sigley**
+Target Role: **SOC Analyst / Cybersecurity Analyst / Security Operations**
 
 ---
 
-## 📁 Contents
+# 🔎 Overview
 
-- `001-Threat-Report-MetaDefender.md` – Full phishing investigation using MetaDefender
-- `Phishing-Playbook.md` – Step-by-step investigation workflow
-- `MITRE-Mapping.md` – ATT&CK technique alignment
-- `Screenshots/` – Visuals from sandbox and SIEM tools
-- `IOC-Tracker.csv` – Indicators of Compromise log (optional)
+This repository demonstrates **Security Operations Center (SOC) investigation workflows** using real-world tools and methodologies.
 
----
+The project simulates how SOC analysts investigate and document security incidents including:
 
-## 🧪 Investigation Workflow
+• Phishing attacks
+• Malware execution
+• Suspicious network traffic
+• Threat intelligence correlation
 
-### Phase 1: Email Recon
-- Check sender, subject, grammar, and embedded links
-- Identify urgency or manipulation tactics
-
-### Phase 2: Sandbox Analysis
-- Upload suspicious link to ANY.RUN
-- Observe redirects, downloads, and external connections
-
-### Phase 3: Threat Intelligence
-- Submit URL/file to MetaDefender or VirusTotal
-- Record detection ratios and flagged engines
-
-### Phase 4: MITRE ATT&CK Mapping
-- T1566.001 – Phishing via email  
-- T1204.002 – User execution via malicious link  
-- T1111 – Credential access attempt
+Each investigation follows a **structured incident response process aligned with MITRE ATT&CK** and standard SOC operating procedures.
 
 ---
 
-## ✅ Actions Taken
+# 🧰 Tools Used
 
-- Blocked sender domain  
-- Alerted users  
-- Reset credentials  
-- Escalated to SOC management  
-- Documented full incident with screenshots
-
----
-
-## 📈 Next Steps
-
-- Add VirusTotal-based report  
-- Expand to invoice phishing and credential theft scenarios  
-- Integrate Wazuh or Security Onion for SIEM alerting  
-- Automate IOC extraction with Python
+• ANY.RUN
+• Hybrid Analysis
+• MetaDefender
+• VirusTotal
+• Wireshark
+• TryHackMe
+• MITRE ATT&CK Framework
+• Markdown Documentation
 
 ---
 
-## 📬 Contact
+# 🧠 SOC Investigation Workflow
 
-Feel free to connect or collaborate:  
-📧 [LinkedIn](www.linkedin.com/in/suavesigley)  
-📁 [Portfolio](https://github.com/suavesigley)
+The investigations follow a repeatable SOC analysis methodology:
+
+### Phase 1 — Initial Alert / Email Recon
+
+* Review sender domain
+* Inspect suspicious links
+* Identify phishing tactics
+* Capture email artifacts
+
+### Phase 2 — Sandbox Analysis
+
+* Execute files or URLs inside sandbox
+* Observe process behavior
+* Identify dropped files
+* Monitor network connections
+
+### Phase 3 — Threat Intelligence
+
+* Submit hashes and URLs to:
+
+  * VirusTotal
+  * MetaDefender
+  * Hybrid Analysis
+* Record detection ratios and reputation
+
+### Phase 4 — MITRE ATT&CK Mapping
+
+Example techniques observed:
+
+| Technique | Description        |
+| --------- | ------------------ |
+| T1566.001 | Phishing via Email |
+| T1204.002 | User Execution     |
+| T1059     | Command Execution  |
+| T1111     | Credential Access  |
+
+---
+
+# 📂 Repository Structure
+
+```
+SOC_Analyst_Playbook
+│
+├── reports
+│   ├── 001-Threat-Report-MetaDefender.md
+│   └── 002-Threat-Report-HybridAnalysis.md
+│
+├── soc_dashboard_simulation
+│   └── incident_tracker.csv
+│
+├── Screenshots
+│
+└── README.md
+```
+
+---
+
+# 🧪 Example Investigations
+
+### Phishing Email Investigation
+
+Analysis of a phishing email campaign including:
+
+* Email header analysis
+* URL detonation
+* Sandbox execution
+* Threat intelligence enrichment
+
+### Malware Sandbox Investigation
+
+Dynamic malware analysis using **Hybrid Analysis sandbox** including:
+
+* File behavior
+* Process tree
+* Network connections
+* MITRE ATT&CK mapping
+
+---
+
+# 📊 Incident Tracking
+
+The project includes a simulated **SOC incident tracker** used to log investigation results, severity ratings, and remediation actions.
+
+Example fields:
+
+* Incident ID
+* Detection Source
+* Threat Type
+* Indicators of Compromise
+* MITRE Technique
+* Analyst Notes
+
+---
+
+# 🔗 Related Project
+
+### 🧪 Project Hydra – SOC Home Lab
+
+A full cybersecurity lab environment used to generate security events and simulate attacks.
+
+Features include:
+
+* Virtualized security lab
+* Network segmentation
+* Remote administration
+* File server environment
+* Security monitoring
+
+---
+
+# 📈 Future Improvements
+
+Planned expansions for this repository:
+
+• VirusTotal threat report investigation
+• Malware reverse engineering analysis
+• Wazuh SIEM alert investigation
+• Security Onion network alerts
+• Brute force attack investigation
+• Privilege escalation detection
+
+---
+
+# 🎯 Purpose
+
+This project demonstrates practical SOC analyst capabilities including:
+
+* Threat investigation
+* Malware analysis
+* Threat intelligence usage
+* Incident documentation
+* MITRE ATT&CK mapping
+* Security reporting
+
+---
+
+# 📬 Contact
+
+GitHub: https://github.com/suavesigley
