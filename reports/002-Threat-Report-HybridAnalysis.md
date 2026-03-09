@@ -86,6 +86,8 @@
 
 ---
 ![Hybrid Analysis Overview](./images/1.png)
+
+<img src="images/1.png" alt="Hybrid Analysis Overview" width="600">
 ## 📎 Notes
 
 - This report builds on the VirusTotal investigation  
