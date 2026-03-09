@@ -170,7 +170,8 @@ This project demonstrates practical SOC analyst capabilities including:
 * Security reporting
 
 ---
-🌐 Lab Architecture
+# 🌐 Lab Architecture
+
 <img width="358" height="550" alt="b" src="https://github.com/user-attachments/assets/0d79448f-cff7-4e02-a030-bd3dc8a8761d" />
 
 # 📬 Contact
