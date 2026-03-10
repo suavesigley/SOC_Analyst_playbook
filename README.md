@@ -174,6 +174,15 @@ This project demonstrates practical SOC analyst capabilities including:
 
 <img width="358" height="550" alt="b" src="https://github.com/user-attachments/assets/0d79448f-cff7-4e02-a030-bd3dc8a8761d" />
 
+---
+## 🛠️ SIEM Simulation & Lookup Tables
+The files in this repository are designed to be used in a live SOC environment (Wazuh/Splunk).
+
+* **`incident_tracker.csv`**: A high-level management log of all investigations, outcomes, and MITRE mappings.
+* **`ioc_tracker.csv`**: A technical lookup table intended for SIEM automation. 
+    * **Usage**: Import this as a **Lookup Table** in Splunk or a **CDB List** in Wazuh.
+    * **Automation**: Use this file to automatically tag or block traffic matching known malicious IPs, Hashes, or URLs.
+---
 # 📬 Contact
 
 GitHub: https://github.com/suavesigley
