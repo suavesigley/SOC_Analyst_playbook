@@ -82,7 +82,7 @@
 
 ## 🖼️ Screenshot Reference
 
-![VirusTotal Scan Overview](images/vt1.png)
+![VirusTotal Scan Overview](.../images/vt1.png)
 
 ---
 
