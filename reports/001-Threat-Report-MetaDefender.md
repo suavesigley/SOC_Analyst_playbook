@@ -6,6 +6,7 @@
 **Source of Suspicion**: Threat intelligence exercise using known malware repository
 
 ---
+## 🖼️ Screenshot Reference
 ![VirusTotal Scan Overview]<img width="1126" height="567" alt="vt1" src="https://github.com/user-attachments/assets/6975331f-61a3-406d-85cf-74d17585eb06" />
 ---
 
@@ -79,13 +80,6 @@
 | Initial Access     | T1566.001       | Spearphishing via email *(simulated)*  
 | Execution          | T1204.002       | User execution via link *(simulated)*  
 | Credential Access  | T1111           | Phishing for credentials *(not observed)*  
-
----
-
-## 🖼️ Screenshot Reference
-
-![VirusTotal Scan Overview](.../images/vt1.png)
-![VirusTotal Scan Overview]<img width="1126" height="567" alt="vt1" src="https://github.com/user-attachments/assets/6975331f-61a3-406d-85cf-74d17585eb06" />
 
 ---
 
