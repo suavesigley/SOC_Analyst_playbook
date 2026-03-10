@@ -6,6 +6,8 @@
 **Source of Suspicion**: Threat intelligence exercise using known malware repository
 
 ---
+![VirusTotal Scan Overview]<img width="1126" height="567" alt="vt1" src="https://github.com/user-attachments/assets/6975331f-61a3-406d-85cf-74d17585eb06" />
+---
 
 ## 1️⃣ Initial Assessment
 
@@ -83,7 +85,7 @@
 ## 🖼️ Screenshot Reference
 
 ![VirusTotal Scan Overview](.../images/vt1.png)
-<img width="1126" height="567" alt="vt1" src="https://github.com/user-attachments/assets/6975331f-61a3-406d-85cf-74d17585eb06" />
+![VirusTotal Scan Overview]<img width="1126" height="567" alt="vt1" src="https://github.com/user-attachments/assets/6975331f-61a3-406d-85cf-74d17585eb06" />
 
 ---
 
