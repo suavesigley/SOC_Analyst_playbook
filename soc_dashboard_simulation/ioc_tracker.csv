@@ -1,0 +1,5 @@
+Indicator,Type,Severity,First_Seen,Related_Incident,Description,Action_Taken
+https://bazaar.abuse.ch,URL,Informational,2025-08-25,SOC-001,Malware research repository,Whitelisted
+115.60.252.46,IP,High,2026-03-10,SOC-003,Malicious ZIP delivery host,Blocked
+35776,Port,Medium,2026-03-10,SOC-003,Non-standard port for payload delivery,Monitored
+http://115.60.252.46:35776/i,URL,High,2026-03-10,SOC-003,Direct IP malware download link,Blocked
