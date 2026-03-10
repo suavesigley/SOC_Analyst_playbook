@@ -3,3 +3,10 @@ https://bazaar.abuse.ch,URL,Informational,2025-08-25,SOC-001,Malware research re
 115.60.252.46,IP,High,2026-03-10,SOC-003,Malicious ZIP delivery host,Blocked
 35776,Port,Medium,2026-03-10,SOC-003,Non-standard port for payload delivery,Monitored
 http://115.60.252.46:35776/i,URL,High,2026-03-10,SOC-003,Direct IP malware download link,Blocked
+Indicator,Type,Severity,First_Seen,Related_Incident,Description,Action_Taken
+https://bazaar.abuse.ch,URL,Informational,2025-08-25,SOC-001,Malware research repository,Whitelisted
+bazar.bis.exe,File Name,Critical,2023-04-06,SOC-002,BazarLoader executable payload,Blocked at Endpoint
+BazarLoader,Threat Tag,Critical,2023-04-06,SOC-002,Malware family (BazaCall campaign),Alerting Enabled
+115.60.252.46,IP,High,2026-03-10,SOC-003,Malicious ZIP delivery host,Blocked at Firewall
+35776,Port,Medium,2026-03-10,SOC-003,Non-standard port for payload delivery,Monitored in SIEM
+http://115.60.252.46:35776/i,URL,High,2026-03-10,SOC-003,Direct IP malware download link,Blocked at Proxy
