@@ -7,7 +7,7 @@
 
 ---
 ## 🖼️ Screenshot Reference
-![VirusTotal Scan Overview]<img width="900" height="400" alt="vt1" src="https://github.com/user-attachments/assets/6975331f-61a3-406d-85cf-74d17585eb06" />
+[VirusTotal Scan Overview]<img width="900" height="400" alt="vt1" src="https://github.com/user-attachments/assets/6975331f-61a3-406d-85cf-74d17585eb06" />
 ---
 
 ## 1️⃣ Initial Assessment
