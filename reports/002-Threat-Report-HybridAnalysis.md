@@ -6,6 +6,10 @@
 **Source of Suspicion**: Suspicious executable file submitted for behavioral analysis
 
 ---
+## 🖼️ Screenshot Reference
+
+![Hybrid Analysis Overview](reports/1.png)
+<img width="1627" height="967" alt="1" src="https://github.com/user-attachments/assets/0df3a1f8-156d-465e-b57e-adc3e65bde09" />
 
 ## 1️⃣ Initial Assessment
 
@@ -80,14 +84,6 @@
 
 ---
 
-## 🖼️ Screenshot Reference
-
-![Hybrid Analysis Overview](reports/1.png)
-
----
-![Hybrid Analysis Overview](./images/1.png)
-
-<img src="images/1.png" alt="Hybrid Analysis Overview" width="600">
 ## 📎 Notes
 
 - This report builds on the VirusTotal investigation  
