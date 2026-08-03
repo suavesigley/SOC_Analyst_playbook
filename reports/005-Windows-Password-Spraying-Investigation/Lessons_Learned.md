@@ -1,46 +1,153 @@
-# Lessons Learned
+# Lessons Learned — INC-005
 
-## Analyst development
+## Investigation Lessons
 
-This investigation highlighted several important SOC analysis principles.
+### 1. Build the timeline first
 
-### 1. Start with the timeline
+Ordering authentication and endpoint events chronologically allowed the investigation to move from isolated alerts to a coherent attack sequence.
 
-The investigation became meaningful when authentication events were ordered chronologically.
+### 2. Look for patterns
 
-### 2. Look for patterns, not isolated events
+Repeated failed logons against one account can have several explanations.
 
-Seven failures against one account could have several explanations. Failures across multiple accounts from the same source provide much stronger evidence of password spraying.
+Multiple accounts being targeted rapidly from the same source is a significantly stronger indicator of password spraying.
 
-### 3. Correlate authentication with endpoint activity
+### 3. Correlate different telemetry sources
 
-The investigation escalated when the source IP was linked to `RG-LAPTOP-12`, and then to PowerShell process creation.
+The investigation became stronger when:
 
-### 4. Do not overstate evidence
+```text
+Authentication Logs
+        +
+Domain Controller Events
+        +
+Endpoint Identification
+        +
+Process Creation
+        +
+PowerShell Script Block Logging
+```
 
-An analyst should distinguish between:
+were correlated.
 
-- observed behaviour;
-- supported hypothesis;
-- confirmed finding;
-- unknowns requiring further investigation.
+No single event established the complete incident.
 
-For example, suspicious PowerShell execution is not automatically proof of malware.
+### 4. Investigate what PowerShell actually executed
 
-### 5. Successful authentication changes the investigation
+Seeing:
 
-A successful login following credential-targeting activity should trigger investigation into what happened after authentication.
+```text
+powershell.exe
+```
 
-### 6. PowerShell command content matters
+is not enough to conclude malicious activity.
 
-Knowing that `powershell.exe` ran is less useful than knowing what it executed. Script Block Logging and command-line telemetry can provide much stronger investigative evidence.
+The investigation became significantly stronger after obtaining Event ID 4104 and identifying:
 
-## Personal reflection
+```powershell
+DownloadString(...)
+IEX(...)
+```
 
-This simulated engagement was designed to practise the transition from technical learning to client-ready analysis.
+The next investigative question should always be:
 
-The investigation required progressively updating the hypothesis as new evidence became available rather than committing prematurely to an explanation.
+> **What did the process actually execute?**
 
-## Portfolio limitations
+### 5. Separate facts from assumptions
 
-This is a simulated case study. It demonstrates investigative methodology but does not constitute professional incident-response experience or a real client engagement.
+A professional analyst should distinguish:
+
+**Observed**
+
+from
+
+**Supported**
+
+from
+
+**Unknown**
+
+For example:
+
+**Observed:**
+
+PowerShell retrieved a remote resource and passed it to `IEX`.
+
+**Supported:**
+
+Remote PowerShell code execution occurred.
+
+**Unknown:**
+
+Whether the retrieved script was malicious and what actions it performed.
+
+### 6. Do not overstate the incident
+
+The evidence supports a serious security incident.
+
+It does not prove:
+
+* ransomware;
+* data exfiltration;
+* privilege escalation;
+* domain compromise;
+* persistence;
+* lateral movement.
+
+Those conclusions require additional evidence.
+
+### 7. Severity must match evidence
+
+The final classification was set to **High** rather than Critical because active compromise is strongly suspected, but major-impact outcomes such as privileged compromise, persistence, lateral movement, or data exfiltration were not established.
+
+The incident should be escalated if those conditions are confirmed.
+
+---
+
+# Analyst Development
+
+This simulated investigation was designed to practise the transition from cybersecurity study into practical SOC analysis.
+
+The investigation required progressively updating the working hypothesis as new evidence became available.
+
+The key skill demonstrated is not knowing every answer immediately.
+
+It is knowing:
+
+> **What evidence should I request next?**
+
+Examples from this investigation included:
+
+* identifying the source IP;
+* correlating authentication events;
+* determining which accounts were targeted;
+* identifying the source endpoint;
+* confirming whether the user was operating the endpoint;
+* requesting process creation telemetry;
+* requesting PowerShell Script Block Logging;
+* determining what PowerShell actually executed.
+
+---
+
+# Remaining Investigation Questions
+
+A real investigation would continue until the following questions were answered:
+
+1. What is the actual content of `update.ps1`?
+2. Is `10.10.20.15` authorised?
+3. How did `RG-LAPTOP-12` become compromised?
+4. Were credentials stolen from the endpoint?
+5. Was `r.brown` actually compromised?
+6. Did the attacker establish persistence?
+7. Was lateral movement attempted?
+8. Were privileged accounts accessed?
+9. Was sensitive information accessed?
+10. Were other endpoints affected?
+
+---
+
+# Portfolio Disclaimer
+
+This is a simulated cybersecurity investigation using synthetic evidence.
+
+It demonstrates investigation methodology and technical analysis but does **not** represent professional employment or a real client engagement.
